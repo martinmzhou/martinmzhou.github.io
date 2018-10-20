@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body style="height: 100%; margin: 0;background-color: #154e90">
+    <div id="container" style="height: 70%;width: 60%;position: absolute;"></div>
+    <div id="right_box" style="height: 30%;width: 30%;left: 70%;position: absolute;top: 30%"></div>
+    <div id="dataShow" style="height: 30%; width: 27%;top:  70%;left: 5%"></div>
+    <div id="dataShow_center" style="height: 30%; width: 60%;top:  70%;position: absolute;left: 33%"></div>
+
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-liquidfill.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script>
+        var zhongguo = "./map/data-china.json";
+        var hainan = "/map/data-hainan.json";
+        var xizang = "/map/xizang.json";
+        var zhejiang = "/map/zhejiang.json";
+        var yunnan = "/map/yunnan.json";
+        var xinjiang = "/map/xinjiang.json";
+        var tianjin = "/map/tianjin.json";
+        var sichuan = "/map/sichuan.json";
+        var shanxi = "/map/shanxi.json";
+        var shangxi = "/map/shangxi.json";
+        var shanghai = "/map/shanghai.json";
+        var shangdong = "/map/shangdong.json";
+        var qinghai = "/map/qinghai.json";
+        var ningxia = "/map/ningxia.json";
+        var neimenggu = "/map/neimenggu.json";
+        var liaoning = "/map/liaoning.json";
+        var jilin = "/map/jilin.json";
+        var jiangxi = "/map/jiangxi.json";
+        var jiangsu = "/map/jiangsu.json";
+        var hunan = "/map/hunan.json";
+        var hubei = "/map/hubei.json";
+        var henan = "/map/henan.json";
+        var heilongjiang = "/map/heilongjiang.json";
+        var hebei = "/map/hebei.json";
+        var guizhou = "/map/guizhou.json";
+        var guangxi = "/map/guangxi.json";
+        var guangdong = "/map/guangdong.json";
+        var gansu = "/map/gansu.json";
+        var chongqing = "/map/chongqing.json";
+        var aomen = "/map/aomen.json";
+        var anhui = "/map/anhui.json";
+        var beijing = "/map/beijing.json";
+        var fujian = "/map/fujian.json";
+        var xianggang = "/map/xianggang.json";
+
+        var name_title = "亿光联点位分布图"
+        var subname = '在线设备数据'
+        var nameColor = " rgb(255, 255, 255)"
+        var name_fontFamily = '等线'
+        var subname_fontSize = 15
+        var name_fontSize = 18
+        var mapName = 'china'
+
+        echarts.extendsMap = function (id, opt) {
+            // 实例
+            var chart = this.init(document.getElementById(id));
+
+            var curGeoJson = {};
+            var cityMap = {
+                '中国': zhongguo,
+                '上海': shanghai,
+                '河北': hebei,
+                '山西': shangxi,
+                '内蒙古': neimenggu,
+                '辽宁': liaoning,
+                '吉林': jilin,
+                '黑龙江': heilongjiang,
+                '江苏': jiangsu,
+                '浙江': zhejiang,
+                '安徽': anhui,
+                '福建': fujian,
+                '江西': jiangxi,
+                '山东': shangdong,
+                '河南': henan,
+                '湖北': hubei,
+                '湖南': hunan,
+                '广东': guangdong,
+                '广西': guangxi,
+                '海南': hainan,
+                '四川': sichuan,
+                '贵州': guizhou,
+                '云南': yunnan,
+                '西藏': xizang,
+                '陕西': shanxi,
+                '甘肃': gansu,
+                '青海': qinghai,
+                '宁夏': ningxia,
+                '新疆': xinjiang,
+                '北京': beijing,
+                '天津': tianjin,
+                '重庆': chongqing,
+                '香港': xianggang,
+                '澳门': aomen
+            };
+            var geoCoordMap = {
+                "磴口": [107.012225, 40.337792],
+                "沈海": [123.476404, 41.811854],
+                "盘锦": [122.150954, 41.146597],
+                "温州苍南": [120.434446, 27.523467],
+                "沧州": [116.845318, 38.310486],
+                "曹妃甸": [118.504805, 39.004067],
+                "唐山": [118.088961, 39.599362],
+                "渤海新区": [117.639472, 38.365606],
+                "菏泽": [115.182225, 35.326397],
+                "海丰": [115.050769, 22.762251],
+                "贺州": [111.371802, 24.741613],
+                "鲤鱼江": [113.233978, 25.942699],
+                "鲤鱼江": [113.205002, 25.440064],
+                "广州": [113.535842, 22.863521],
+                "湖北": [113.888854, 29.667558],
+                "湖北二期": [114.119833, 29.669091],
+                "涟源": [111.906695, 27.767901],
+                "宜昌": [111.456005, 30.50378],
+                "徐州": [117.091077, 34.378713],
+                "南京热电": [118.828047, 32.273218],
+                "宜兴": [119.801641, 31.36496],
+                "镇江": [119.383774, 32.188708],
+                "华鑫": [113.888833, 29.669091],
+                "常熟": [119.283774, 32.188708],
+                "化工园": [118.927993, 32.27431],
+                "南京板桥": [118.64423, 31.953574],
+                "徐州三期": [117.291077, 34.378713],
+                "六枝": [105.403904, 26.387848],
+                "首阳山": [112.695363, 34.744379],
+                "焦作": [113.113088, 35.222327],
+                "登封": [113.215689, 34.396153],
+                "洛阳": [111.984763, 34.746303],
+                "古城": [114.061156, 32.878627],
+            };
+
+
+
+            var defaultOpt = {
+                mapName: 'china', // 地图展示
+                goDown: false, // 是否下钻
+                bgColor: '#404a59', // 画布背景色
+                activeArea: [], // 区域高亮,同echarts配置项
+                data: [],
+                // 下钻回调(点击的地图名、实例对象option、实例对象)
+                callback: function (name, option, instance) { }
+            };
+            if (opt) opt = this.util.extend(defaultOpt, opt);
+
+            // 层级索引
+            var name = [opt.mapName];
+            var idx = 0;
+            var pos = {
+                leftPlus: 115,
+                leftCur: 150,
+                left: 198,
+                top: 50
+            };
+
+            var line = [
+                [0, 0],
+                [8, 11],
+                [0, 22]
+            ];
+            // style
+            var style = {
+                font: '18px "Microsoft YaHei", sans-serif',
+                textColor: '#eee',
+                lineColor: 'rgba(147, 235, 248, .8)'
+            };
+
+            var handleEvents = {
+                /**
+                 * i 实例对象
+                 * o option
+                 * n 地图名
+                 **/
+                resetOption: function (i, o, n) {
+                    var breadcrumb = this.createBreadcrumb(n);
+                    var j = name.indexOf(n);
+                    var l = o.graphic.length;
+                    if (j < 0) {
+                        o.graphic.push(breadcrumb);
+                        o.graphic[0].children[0].shape.x2 = 145;
+                        o.graphic[0].children[1].shape.x2 = 145;
+                        if (o.graphic.length > 2) {
+                            var cityData = [];
+                            var cityJson;
+                            for (var x = 0; x < opt.data.length; x++) {
+                                if (n === opt.data[x].city) {
+                                    $([opt.data[x]]).each(function (index, data) {
+                                        cityJson = {
+                                            city: data.city,
+                                            name: data.name,
+                                            value: data.value,
+                                            crew: data.crew,
+                                            company: data.company,
+                                            position: data.position,
+                                            region: data.region
+                                        };
+                                        cityData.push(cityJson)
+                                    })
+                                }
+                            }
+
+                            if (cityData != null) {
+                                o.series[0].data = handleEvents.initSeriesData(cityData);
+                            } else {
+                                o.series[0].data = [];
+                            }
+
+
+                        }
+                        name.push(n);
+                        idx++;
+                    } else {
+                        o.graphic.splice(j + 2, l);
+                        if (o.graphic.length <= 2) {
+                            o.graphic[0].children[0].shape.x2 = 60;
+                            o.graphic[0].children[1].shape.x2 = 60;
+                            o.series[0].data = handleEvents.initSeriesData(opt.data);
+                        };
+                        name.splice(j + 1, l);
+                        idx = j;
+                        pos.leftCur -= pos.leftPlus * (l - j - 1);
+                    };
+
+                    o.geo.map = n;
+                    o.geo.zoom = 0.4;
+                    i.clear();
+                    i.setOption(o);
+                    this.zoomAnimation();
+                    opt.callback(n, o, i);
+                },
+
+                /**
+                 * name 地图名
+                 **/
+                createBreadcrumb: function (name) {
+                    var cityToPinyin = {
+                        '中国': 'zhongguo',
+                        '上海': 'shanghai',
+                        '河北': 'hebei',
+                        '山西': 'shangxi',
+                        '内蒙古': 'neimenggu',
+                        '辽宁': 'liaoning',
+                        '吉林': 'jilin',
+                        '黑龙江': 'heilongjiang',
+                        '江苏': 'jiangsu',
+                        '浙江': 'zhejiang',
+                        '安徽': 'anhui',
+                        '福建': 'fujian',
+                        '江西': 'jiangxi',
+                        '山东': 'shangdong',
+                        '河南': 'henan',
+                        '湖北': 'hubei',
+                        '湖南': 'hunan',
+                        '广东': 'guangdong',
+                        '广西': 'guangxi',
+                        '海南': 'hainan',
+                        '四川': 'sichuan',
+                        '贵州': 'guizhou',
+                        '云南': 'yunnan',
+                        '西藏': 'xizang',
+                        '陕西': 'shanxi',
+                        '甘肃': 'gansu',
+                        '青海': 'qinghai',
+                        '宁夏': 'ningxia',
+                        '新疆': 'xinjiang',
+                        '北京': 'beijing',
+                        '天津': 'tianjin',
+                        '重庆': 'chongqing',
+                        '香港': 'xianggang',
+                        '澳门': 'aomen'
+                    };
+                    var breadcrumb = {
+                        type: 'group',
+                        id: name,
+                        left: pos.leftCur + pos.leftPlus,
+                        top: pos.top + 3,
+                        children: [{
+                            type: 'polyline',
+                            left: -90,
+                            top: -5,
+                            shape: {
+                                points: line
+                            },
+                            style: {
+                                stroke: '#fff',
+                                key: name
+                                // lineWidth: 2,
+                            },
+                            onclick: function () {
+                                var name = this.style.key;
+                                handleEvents.resetOption(chart, option, name);
+                            }
+                        }, {
+                            type: 'text',
+                            left: -68,
+                            top: 'middle',
+                            style: {
+                                text: name,
+                                textAlign: 'center',
+                                fill: style.textColor,
+                                font: style.font
+                            },
+                            onclick: function () {
+                                var name = this.style.text;
+                                handleEvents.resetOption(chart, option, name);
+                            }
+                        }, {
+                            type: 'text',
+                            left: -68,
+                            top: 10,
+                            style: {
+
+                                name: name,
+                                text: cityToPinyin[name] ? cityToPinyin[name].toUpperCase() : '',
+                                textAlign: 'center',
+                                fill: style.textColor,
+                                font: '12px "Microsoft YaHei", sans-serif',
+                            },
+                            onclick: function () {
+                                // console.log(this.style);
+                                var name = this.style.name;
+                                handleEvents.resetOption(chart, option, name);
+                            }
+                        }]
+                    }
+
+                    pos.leftCur += pos.leftPlus;
+
+                    return breadcrumb;
+                },
+
+                // 设置effectscatter
+                initSeriesData: function (data) {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var geoCoord = geoCoordMap[data[i].name];
+                        if (geoCoord) {
+                            temp.push({
+                                name: data[i].name,
+                                value: geoCoord.concat(data[i].value),
+                                crew: data[i].crew,
+                                company: data[i].company,
+                                position: data[i].position,
+                                region: data[i].region
+                            });
+                        }
+                    };
+                    debugger
+                    return temp;
+                },
+                zoomAnimation: function () {
+                    var count = null;
+                    var zoom = function (per) {
+                        if (!count) count = per;
+                        count = count + per;
+                        // console.log(per,count);
+                        chart.setOption({
+                            geo: {
+                                zoom: count
+                            }
+                        });
+                        if (count < 1) window.requestAnimationFrame(function () {
+                            zoom(0.2);
+                        });
+                    };
+                    window.requestAnimationFrame(function () {
+                        zoom(0.2);
+                    });
+                }
+            };
+
+            var option = {
+                title: {
+                    text: '亿光联点位分布图',
+                    subtext: '在线数据',
+                    x: 'center',
+                    textStyle: {
+                        color: nameColor,
+                        fontFamily: name_fontFamily,
+                        fontSize: name_fontSize
+                    },
+                    subtextStyle: {
+                        fontSize: subname_fontSize,
+                        fontFamily: name_fontFamily
+                    }
+                },
+                backgroundColor: opt.bgColor,
+                tooltip: {
+                    show: true,
+                    trigger: 'item',
+                    alwaysShowContent: false,
+                    backgroundColor: 'rgba(50,50,50,0.7)',
+                    hideDelay: 100,
+                    triggerOn: 'mousemove',
+                    enterable: true,
+                    position: ['60%', '70%'],
+                    formatter: function (params, ticket, callback) {
+                        return '地址：' + params.data.name + '<br/>' + '在线设备：' + params.data.crew + '台' + '<br/>'
+                    }
+                },
+                geo: {
+                    map: opt.mapName,
+                    roam: true,
+                    zoom: 1,
+                    label: {
+                        normal: {
+                            show: true,
+                            textStyle: {
+                                color: '#fff'
+                            }
+                        },
+                        emphasis: {
+                            textStyle: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            borderColor: 'rgba(147, 235, 248, 1)',
+                            borderWidth: 1,
+                            areaColor: {
+                                type: 'radial',
+                                x: 0.5,
+                                y: 0.5,
+                                r: 0.8,
+                                colorStops: [{
+                                    offset: 0,
+                                    color: 'rgba(147, 235, 248, 0)' // 0% 处的颜色
+                                }, {
+                                    offset: 1,
+                                    color: 'rgba(147, 235, 248, .2)' // 100% 处的颜色
+                                }],
+                                globalCoord: false // 缺省为 false
+                            },
+                            shadowColor: 'rgba(128, 217, 248, 1)',
+                            // shadowColor: 'rgba(255, 255, 255, 1)',
+                            shadowOffsetX: -2,
+                            shadowOffsetY: 2,
+                            shadowBlur: 10
+                        },
+                        emphasis: {
+                            areaColor: '#389BB7',
+                            borderWidth: 0
+                        }
+                    },
+                    regions: opt.activeArea.map(function (item) {
+                        if (typeof item !== 'string') {
+                            return {
+                                name: item.name,
+                                itemStyle: {
+                                    normal: {
+                                        areaColor: item.areaColor || '#389BB7'
+                                    }
+                                },
+                                label: {
+                                    normal: {
+                                        show: item.showLabel,
+                                        textStyle: {
+                                            color: '#fff'
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            return {
+                                name: item,
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#91e6ff',
+                                        areaColor: '#389BB7'
+                                    }
+                                }
+                            }
+                        }
+                    })
+                },
+                series: [{
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    showEffectOn: 'render',
+                    rippleEffect: {
+                        period: 5,
+                        scale: 5,
+                        brushType: 'fill'
+                    },
+                    symbolSize: function (val) {
+                        return val[2]/10
+                    },
+                    hoverAnimation: true,
+                    itemStyle: {
+                        normal: {
+                            color: '#FFC848',
+                            shadowBlur: 10,
+                            shadowColor: '#333'
+                        }
+                    },
+                    data: handleEvents.initSeriesData(opt.data)
+                }]
+            };
+
+            chart.setOption(option);
+
+
+            chart.setMap = function (mapName) {
+                var _self = this;
+                if (mapName.indexOf('市') < 0) mapName = mapName + '市';
+                var citySource = cityMap[mapName];
+                if (citySource) {
+                    var url = './map/' + citySource + '.json';
+                    $.get(url, function (response) {
+                        // console.log(response);
+                        curGeoJson = response;
+                        echarts.registerMap(mapName, response);
+                        handleEvents.resetOption(_self, option, mapName);
+                    });
+                }
+
+            };
+
+            return chart;
+        };
+
+        $.getJSON(zhongguo, function (geoJson) {
+            debugger
+            echarts.registerMap('中国', geoJson);
+            var myChart = echarts.extendsMap('container', {
+                bgColor: '#154e90', // 画布背景色
+                mapName: '中国', // 地图名
+                text: '火电业务',
+                goDown: false, // 是否下钻
+                // 下钻回调
+                callback: function (name, option, instance) {
+                    //console.log(name, option, instance);
+                },
+                // 数据展示            	
+                data: [{
+                    city: '内蒙古',
+                    name: "磴口",
+                    value: 50,
+                    crew: '50',
+                    company: "磴口金牛煤电",
+                    position: '内蒙古自治区巴彦淖尔市磴口县',
+                    region: '北方大区'
+                },
+                {
+                    city: '辽宁',
+                    name: "沈海",
+                    value: 30,
+                    crew: '30',
+                    company: "沈阳沈海热电",
+                    position: '辽宁省沈阳市大东区',
+                    region: '东北大区'
+                },
+                {
+                    city: '辽宁',
+                    name: "盘锦",
+                    value: 35,
+                    crew: '35',
+                    company: "华润电力盘锦",
+                    position: '辽宁省盘锦市大洼区后胡嘴子',
+                    region: '东北大区'
+                },
+                {
+                    city: '浙江',
+                    name: "温州苍南",
+                    value: 100,
+                    crew: '100',
+                    company: "华润电力(温州)有限公司",
+                    position: '浙江省温州市苍南县龙港镇',
+                    region: '东南大区'
+                },
+                {
+                    city: '河北',
+                    name: "沧州",
+                    value: 33,
+                    crew: '33',
+                    company: "沧州华润热电",
+                    position: '河北省沧州市运河区北环西路',
+                    region: '华北大区'
+                },
+                {
+                    city: '河北',
+                    name: "曹妃甸",
+                    value: 30,
+                    crew: '30',
+                    company: "唐山曹妃甸",
+                    position: '河北省唐山市曹妃甸工业区',
+                    region: '华北大区'
+                },
+                {
+                    city: '河北',
+                    name: "唐山丰润",
+                    value: 35,
+                    crew: '35',
+                    company: "华润电力唐山丰润",
+                    position: '河北省唐山市路北区韩城镇',
+                    region: '华北大区'
+                },
+                {
+                    city: '河北',
+                    name: "渤海新区",
+                    value: 35,
+                    crew: '35',
+                    company: "渤海华润电力",
+                    position: '河北省沧州市临港经济技术开发区',
+                    region: '华北大区'
+                },
+                {
+                    city: '山东',
+                    name: "菏泽",
+                    value: 160,
+                    crew: '160',
+                    company: "华润热电（菏泽）有限公司",
+                    position: '山东省菏泽市东明县武胜桥镇',
+                    region: '华东大区'
+                },
+                {
+                    city: '安徽',
+                    name: "阜阳",
+                    value: 64,
+                    crew: '64',
+                    company: "阜阳华润电力有限公司",
+                    position: '安徽省阜阳市颍泉区',
+                    region: '华东大区'
+                },
+                {
+                    city: '广东',
+                    name: "海丰",
+                    value: 100,
+                    crew: '100',
+                    company: "华润电力(海丰)有限公司",
+                    position: '广东省汕尾市海丰县小漠镇',
+                    region: '华南大区'
+                },
+                {
+                    city: '广西',
+                    name: "贺州",
+                    value: 100,
+                    crew: '100',
+                    company: "华润电力(贺州)有限公司",
+                    position: '广西贺州市贺州大道',
+                    region: '华南大区'
+                },
+                {
+                    city: '湖南',
+                    name: "鲤鱼江A",
+                    value: 30,
+                    crew: '30',
+                    company: "华润电力湖南有限公司",
+                    position: '湖南省资兴市鲤鱼江镇',
+                    region: '华南大区'
+                },
+                {
+                    city: '湖南',
+                    name: "鲤鱼江B",
+                    value: 65,
+                    crew: '65',
+                    company: "湖南华润电力鲤鱼江有限公司",
+                    position: '湖南省资兴市鲤鱼江镇',
+                    region: '华南大区'
+                },
+                {
+                    city: '广东',
+                    name: "广州热电",
+                    value: 30,
+                    crew: '30',
+                    company: "广州华润热电有限公司",
+                    position: '广州市南沙区黄阁镇',
+                    region: '华南大区'
+                },
+                {
+                    city: '湖北',
+                    name: "湖北一期",
+                    value: 30,
+                    crew: '30',
+                    company: "华润电力湖北有限公司",
+                    position: '湖北省赤壁市陆水大道99号',
+                    region: '华中大区'
+                },
+                {
+                    city: '湖北',
+                    name: "湖北二期",
+                    value: 100,
+                    crew: '100',
+                    company: "华润电力湖北有限公司二期",
+                    position: '湖北省赤壁市陆水大道99号',
+                    region: '华中大区'
+                },
+                {
+                    city: '湖南',
+                    name: "涟源",
+                    value: 30,
+                    crew: '30',
+                    company: "华润电力(涟源)有限公司",
+                    position: '湖南省娄底市涟源市',
+                    region: '华中大区'
+                },
+                {
+                    city: '湖北',
+                    name: "宜昌",
+                    value: 35,
+                    crew: '35',
+                    company: "华润电力(宜昌)有限公司",
+                    position: '湖北省宜昌市猇亭区',
+                    region: '华中大区'
+                },
+                {
+                    city: '江苏',
+                    name: "徐州一、二期",
+                    value: 32,
+                    crew: '32',
+                    company: "徐州华润电力有限公司",
+                    position: '江苏省徐州市华润路1号',
+                    region: '江苏大区'
+                },
+                {
+                    city: '江苏',
+                    name: "南京热电",
+                    value: 60,
+                    crew: '60',
+                    company: "江苏南热发电有限责任公司",
+                    position: '江苏省南京市六合区',
+                    region: '江苏大区'
+                },
+                {
+                    city: '江苏',
+                    name: "宜兴",
+                    value: 15,
+                    crew: '15',
+                    company: "宜兴华润热电有限公司",
+                    position: '江苏省无锡市宜兴市环保科技工业园',
+                    region: '江苏大区'
+                },
+                {
+                    city: '江苏',
+                    name: "镇江",
+                    value: 30,
+                    crew: '30',
+                    company: "江苏镇江发电有限公司",
+                    position: '江苏省镇江市丹徒区高资镇',
+                    region: '江苏大区'
+                },
+                {
+                    city: '湖北',
+                    name: "华鑫",
+                    value: 33,
+                    crew: '33',
+                    company: "徐州华鑫发电有限公司",
+                    position: '徐州市铜山区茅村工业园',
+                    region: '江苏大区'
+                },
+                {
+                    city: '江苏',
+                    name: "常熟",
+                    value: 65,
+                    crew: '65',
+                    company: "华润电力(常熟)有限公司",
+                    position: '江苏省常熟市珠江东路',
+                    region: '江苏大区'
+                },
+                {
+                    city: '江苏',
+                    name: "商场一、二期",
+                    value: 30,
+                    crew: '30',
+                    company: "南京化学工业园热电有限公司",
+                    position: '南京市雨花经济开发区',
+                    region: '江苏大区'
+                },
+                {
+                    city: '江苏',
+                    name: "南京板桥",
+                    value: 33,
+                    crew: '33',
+                    company: "南京华润热电有限公司",
+                    position: '江苏省徐州市铜山区',
+                    region: '江苏大区'
+                },
+                {
+                    city: '江苏',
+                    name: "徐州三期",
+                    value: 100,
+                    crew: '100',
+                    company: "铜山华润电力有限公司",
+                    position: '江苏省徐州市铜山区',
+                    region: '江苏大区'
+                },
+                {
+                    city: '贵州',
+                    name: "六枝",
+                    value: 66,
+                    crew: '66',
+                    company: "六枝华润电力",
+                    position: '贵州省六盘水市六枝特区岩脚镇',
+                    region: '西南大区'
+                },
+                {
+                    city: '河南',
+                    name: "首阳山",
+                    value: 160,
+                    crew: '160',
+                    company: "河南华润电力首阳山有限公司",
+                    position: '河南省偃师市首阳山镇',
+                    region: '中西大区'
+                },
+                {
+                    city: '河南',
+                    name: "焦作",
+                    value: 66,
+                    crew: '66',
+                    company: "华润电力焦作有限公司",
+                    position: '河南省焦作市博爱县柏山镇',
+                    region: '中西大区'
+                },
+                {
+                    city: '河南',
+                    name: "登封一、二期",
+                    value: 15,
+                    crew: '15',
+                    company: "华润电力登封有限公司",
+                    position: '河南省登封市东刘碑村',
+                    region: '中西大区'
+                },
+                {
+                    city: '河南',
+                    name: "洛阳",
+                    value: 15,
+                    crew: '15',
+                    company: "洛阳华润环保能源有限公司",
+                    position: '河南省偃师市城关工业区',
+                    region: '中西大区'
+                },
+                {
+                    city: '河南',
+                    name: "古城",
+                    value: 30,
+                    crew: '30',
+                    company: "河南华润电力古城有限公司",
+                    position: '河南驻马店市驿城区古城乡',
+                    region: '中西大区'
+                }
+                ]
+            });
+        })
+/*分享需要的json数据：https://share.weiyun.com/5x12K4r*/
+    </script>
+    <script>
+        var dom_data = document.getElementById("dataShow");
+        var myChart_data = echarts.init(dom_data);
+
+
+        option_data = {
+            title: {
+                text: '广告来源统计分析',
+                x: 'center',
+                textStyle: {
+                    color: 'rgb(256,256,256)',
+                    // fontFamily: name_fontFamily,
+                    // fontSize: name_fontSize
+                }
+                // subtextStyle: {
+                //     fontSize: subname_fontSize,
+                //     fontFamily: name_fontFamily
+                // }
+            },
+            backgroundColor: '#154e90',
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                textStyle: {
+                    color: 'rgb(256,256,256)',
+                    // fontFamily: name_fontFamily,
+                    // fontSize: name_fontSize
+                },
+                data: ['餐饮行业', '零售行业', '服装产业', '健身行业', '促销打折']
+            },
+            series: [
+                {
+                    name: '广告来源',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: [
+                        { value: 335, name: '餐饮行业' },
+                        { value: 310, name: '零售行业' },
+                        { value: 234, name: '服装产业' },
+                        { value: 135, name: '健身行业' },
+                        { value: 150, name: '促销打折' }
+                    ]
+                }
+            ]
+        };
+
+
+        if (option_data && typeof option_data === "object") {
+            myChart_data.setOption(option_data, true);
+        }
+    </script>
+    <script>
+        var dom_data = document.getElementById("right_box");
+        var myChart_data_right_box = echarts.init(dom_data);
+
+        option_right_box = {
+            title: {
+                text: '当日数据统计',
+                color: '#fff',
+                textStyle: {
+                    color: 'rgb(256,256,256)',
+                    // fontFamily: name_fontFamily,
+                    // fontSize: name_fontSize
+                }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#283b56'
+                    }
+                }
+            },
+            legend: {
+                data: ['当日广告数', '当日播放时长'],
+                textStyle: {
+                    color: 'rgb(256,256,256)',
+                    // fontFamily: name_fontFamily,
+                    // fontSize: name_fontSize
+                }
+            },
+            dataZoom: {
+                show: false,
+                start: 0,
+                end: 100
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: true,
+                    data: (function () {
+                        var now = new Date();
+                        var res = [];
+                        var len = 10;
+                        while (len--) {
+                            res.unshift(now.toLocaleTimeString().replace(/^\D*/, ''));
+                            now = new Date(now - 2000);
+                        }
+                        return res;
+                    })()
+                },
+                {
+                    show: false,
+                    type: 'category',
+                    boundaryGap: true,
+                    data: (function () {
+                        var res = [];
+                        var len = 10;
+                        while (len--) {
+                            res.push(10 - len - 1);
+                        }
+                        return res;
+                    })()
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    scale: false,
+                    name: '广告个数',
+                    max: 1000,
+                    min: 0,
+                    axisLabel: {
+                        color: '#fff',
+                        fontSize: 12
+                    },
+                    nameTextStyle: {
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                    // boundaryGap: [0.2, 0.2]
+                },
+                {
+                    type: 'value',
+                    scale: false,
+                    name: '播放时长',
+                    max: 3600,
+                    min: 0,
+                    axisLabel: {
+                        color: '#fff',
+                        fontSize: 12
+                    },
+                    nameTextStyle: {
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                    // boundaryGap: [0.2, 0.2]
+                }
+            ],
+            series: [
+                {
+                    name: '播放时长',
+                    type: 'bar',
+                    xAxisIndex: 1,
+                    yAxisIndex: 1,
+                    data: (function () {
+                        var res = [];
+                        var len = 10;
+                        var total = 20
+                        while (len--) {
+                            total = total + Math.ceil(Math.random() * 1);
+                            res.push(total);
+                        }
+                        return res;
+                    })()
+                },
+                {
+                    name: '广告个数',
+                    type: 'line',
+                    data: (function () {
+                        var res = [];
+                        var len = 10;
+                        var total = 200;
+                        while (len--) {
+                            debugger
+                            total = total + Math.ceil(Math.random() * 2);
+                            res.push(total);
+                        }
+                        return res;
+                    })()
+                }
+            ]
+        };
+
+        var count_right_box = 11;
+        setInterval(function () {
+            axisData = (new Date()).toLocaleTimeString().replace(/^\D*/, '');
+
+            var data0 = option_right_box.series[0].data;
+            var data1 = option_right_box.series[1].data;
+            var last0 = data0[9];
+            var last1 = data1[9];
+            debugger
+
+            data0.shift();
+            data0.push(last0 + Math.round(Math.random()));
+            data1.shift();
+            data1.push(last1 + Math.round(Math.random()));
+
+            option_right_box.xAxis[0].data.shift();
+            option_right_box.xAxis[0].data.push(axisData);
+            option_right_box.xAxis[1].data.shift();
+            option_right_box.xAxis[1].data.push(count_right_box++);
+
+            myChart_data_right_box.setOption(option_right_box);
+        }, 2100);
+
+
+        if (option_right_box && typeof option_right_box === "object") {
+            myChart_data_right_box.setOption(option_right_box, true);
+        }
+    </script>
+    <script>
+        var dom_data = document.getElementById("dataShow_center");
+        var myChart_data = echarts.init(dom_data);
+
+        option = {
+            backgroundColor: '#154e90',
+            tooltip: {
+                formatter: "{a} <br/>{c} {b}"
+            },
+            series: [
+                {
+                    name: '总设备数',
+                    type: 'gauge',
+                    min: 0,
+                    max: 10000,
+                    splitNumber: 10,
+                    radius: '98%',
+                    axisLine: {            // 坐标轴线
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: [[0.09, 'lime'], [0.82, '#1e90ff'], [1, '#ff4500']],
+                            width: 3,
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    axisLabel: {            // 坐标轴小标记
+                        textStyle: {       // 属性lineStyle控制线条样式
+                            fontWeight: 'bolder',
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    axisTick: {            // 坐标轴小标记
+                        length: 15,        // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: 'auto',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    splitLine: {           // 分隔线
+                        length: 25,         // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                            width: 3,
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    pointer: {           // 分隔线
+                        shadowColor: '#fff', //默认透明
+                        shadowBlur: 5
+                    },
+                    title: {
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: 'bolder',
+                            fontSize: 20,
+                            fontStyle: 'italic',
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    detail: {
+                        backgroundColor: 'rgba(30,144,255,0.8)',
+                        borderWidth: 1,
+                        borderColor: '#fff',
+                        shadowColor: '#fff', //默认透明
+                        shadowBlur: 5,
+                        offsetCenter: [0, '50%'],       // x, y，单位px
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: 'bolder',
+                            color: '#fff'
+                        }
+                    },
+                    data: [{ value: 5816, name: '总设备数(/台)' }]
+                },
+                {
+                    name: '当前在线',
+                    type: 'gauge',
+                    center: ['25%', '55%'],    // 默认全局居中
+                    radius: '80%',
+                    min: 0,
+                    max: 10000,
+                    endAngle: 28,
+                    splitNumber: 5,
+                    axisLine: {            // 坐标轴线
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: [[0.29, 'lime'], [0.86, '#1e90ff'], [1, '#ff4500']],
+                            width: 2,
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    axisLabel: {            // 坐标轴小标记
+                        textStyle: {       // 属性lineStyle控制线条样式
+                            fontWeight: 'bolder',
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    axisTick: {            // 坐标轴小标记
+                        length: 12,        // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: 'auto',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    splitLine: {           // 分隔线
+                        length: 20,         // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                            width: 3,
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    pointer: {
+                        width: 5,
+                        shadowColor: '#fff', //默认透明
+                        shadowBlur: 5
+                    },
+                    title: {
+                        offsetCenter: [0, '-30%'],       // x, y，单位px
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: 'bolder',
+                            fontStyle: 'italic',
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    detail: {
+                        backgroundColor: 'rgba(30,144,255,0.8)',
+                        borderWidth: 1,
+                        borderColor: '#fff',
+                        shadowColor: '#fff', //默认透明
+                        shadowBlur: 5,
+                        offsetCenter: [0, '50%'],       // x, y，单位px
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: 'bolder',
+                            color: '#fff'
+                        }
+                    },
+                    data: [{ value: 4826, name: '当前在线(/台)' }]
+                },
+                {
+                    name: '总广告数',
+                    type: 'gauge',
+                    center: ['75%', '50%'],    // 默认全局居中
+                    radius: '80%',
+                    min: 0,
+                    max: 50000,
+                    startAngle: 156,
+                    endAngle: 24,
+                    splitNumber: 4,
+                    axisLine: {            // 坐标轴线
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: [[0.2, 'lime'], [0.8, '#1e90ff'], [1, '#ff4500']],
+                            width: 2,
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    axisTick: {            // 坐标轴小标记
+                        length: 12,        // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: 'auto',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    axisLabel: {
+                        textStyle: {       // 属性lineStyle控制线条样式
+                            fontWeight: 'bolder',
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    splitLine: {           // 分隔线
+                        length: 15,         // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                            width: 3,
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    pointer: {
+                        width: 2,
+                        shadowColor: '#fff', //默认透明
+                        shadowBlur: 5
+                    },
+                    title: {
+                        show: true,
+                        color: "#fff"
+                    },
+                    detail: {
+                        show: false
+                    },
+                    data: [{ value: 48654, name: '总广告数(/个)' }]
+                },
+                {
+                    name: '总广告数',
+                    type: 'gauge',
+                    center: ['75%', '50%'],    // 默认全局居中
+                    radius: '80%',
+                    min: 0,
+                    max: 50000,
+                    startAngle: 336,
+                    endAngle: 204,
+                    splitNumber: 4,
+                    axisLine: {            // 坐标轴线
+                        lineStyle: {       // 属性lineStyle控制线条样式
+                            color: [[0.2, 'lime'], [0.8, '#1e90ff'], [1, '#ff4500']],
+                            width: 2,
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    axisTick: {            // 坐标轴小标记
+                        show: false
+                    },
+                    axisLabel: {
+                        textStyle: {       // 属性lineStyle控制线条样式
+                            fontWeight: 'bolder',
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        },
+
+                    },
+                    splitLine: {           // 分隔线
+                        length: 15,         // 属性length控制线长
+                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                            width: 3,
+                            color: '#fff',
+                            shadowColor: '#fff', //默认透明
+                            shadowBlur: 10
+                        }
+                    },
+                    pointer: {
+                        width: 2,
+                        shadowColor: '#fff', //默认透明
+                        shadowBlur: 5
+                    },
+                    title: {
+                        show: false,
+                        color: "#fff"
+                    },
+                    detail: {
+                        backgroundColor: 'rgba(30,144,255,0.8)',
+                        borderWidth: 1,
+                        borderColor: '#fff',
+                        shadowColor: '#fff', //默认透明
+                        shadowBlur: 3,
+                        offsetCenter: [0, '30%'],       // x, y，单位px
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            fontWeight: 'bolder',
+                            color: '#fff',
+                            fontSize: 18
+                        }
+
+                    },
+                    data: [{ value: 48654, name: '总广告数(/个)' }]
+                }
+            ]
+        };
+
+        setInterval(function () {
+            // option.series[0].data[0].value = (Math.random()*100).toFixed(2) - 0;
+            var online = Math.ceil(4800 + Math.random() * (4900 - 4820));
+            option.series[1].data[0].value = online;
+            var online_show = Math.ceil(48600 + Math.random() * (48800 - 48500));
+
+            option.series[2].data[0].value = online_show;
+            option.series[3].data[0].value = online_show;
+            myChart_data.setOption(option);
+        }, 2000)
+
+        setInterval(function () {
+            // option.series[0].data[0].value = (Math.random()*100).toFixed(2) - 0;
+            var total = option.series[0].data[0].value + 1;
+            option.series[0].data[0].value = total;
+            myChart_data.setOption(option);
+        }, 50000)
+
+        if (option && typeof option === "object") {
+            myChart_data.setOption(option, true);
+        }
+    </script>
+
+</body>
+
+</html>
